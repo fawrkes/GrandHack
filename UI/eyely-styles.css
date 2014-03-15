@@ -1,0 +1,21 @@
+div.header {
+  background: #ececec;
+  border-bottom: 3px solid #2e3436;
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-bottom: 10px;
+}
+
+div.header .headertitle {
+  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+  font-weight: normal;
+  font-size: 180%;
+  letter-spacing: .08em;
+  margin-bottom: .8em;
+
+  margin-top: 1em;
+
+  color: #a7a7a7;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
