@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Eyely</title>
+    
+    <link rel="stylesheet" href="styles.css" type="text/css" />
+    <link rel="stylesheet" href="pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/searchtools.js"></script>
+    <link rel="top" title="Leap Motion 1.0.9 documentation" href="index.html" />
+  <script type="text/javascript">
+    jQuery(function() { Search.loadIndex("searchindex.js"); });
+  </script>
+  </head>
+
+  <body>
+
+    <div class="header-wrapper">
+      <div class="header">
+        <div class="rel">
+          <a href="genindex.html" title="General Index" accesskey="I">Eyely</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="document">
+          <div class="documentwrapper">
+            <div class="bodywrapper">
+              <div class="body">
+                <h1 id="search-documentation">Interface</h1>
+                <div id="fallback" class="admonition warning">
+                  <script type="text/javascript">$('#fallback').hide();</script>
+                  <p>
+                    Allowing sick patients to communicate with their eyes.
+                  </p>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div> 
+    </div>
+    
+    <div class="webcam">
+    <script type="text/javascript">
+      # The following lines have already been called
+      # for you:
+      #   Camera = new require('models/Camera')
+      #   CVImage = require('models/Image')
+      #   Display = require('models/Display')
+
+      display = new Display(".livePreview")
+      size = display.resolution()
+
+      console.log size
+
+      # Safe way to stream the camera data.
+      # Loop doesn't run when the page isn't
+      # visible.
+      Camera.beginStream((i)=>
+        i = i.resize size[0], size[1]
+        i = i.grayscale()
+        i.show display
+      )
+
+    </script>
+    </div>
+
+    <div class="clearer"></div>
+
+    <div class="footer-wrapper">
+      <div class="footer">
+        <div class="right">          
+          <div class="footer">
+            &copy; Made at GrandHack @ MIT
+            </div>
+          </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+  </body>
+</html>
