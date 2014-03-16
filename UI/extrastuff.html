@@ -1,0 +1,85 @@
+
+/*
+        function coordinatesToButton(x,y)
+        {
+          // finds what box it's in 
+          for (var p in grid)
+          {
+            var checkBox = grid[p];
+         //   console.log("box.x1 %i < x %i < box.x2 %i", checkBox.x1, x, checkBox.x2);
+       //     console.log("box.y1 %i < y %i < box.y2 %i", checkBox.y1, y, checkBox.y2);
+            if (checkBox.x1 < x && x < checkBox.x2 && checkBox.y1 < y && y < checkBox.y2)
+            {
+     //         console.log("HIT A BUTTON");
+  ///            console.log("In box %i", checkBox.number);
+
+              // iterate through quadrants
+              for (var i = 0; i < NOBUTTON; i++)
+              {
+                // iterate through box #s in quadrants
+//                console.log(quads[i]);
+
+                quadBoxes = new Array();
+                quadBoxes = quads[i];
+
+                for (var j = 0; j < quads[i].length; j++)
+                {
+                  if (quadBoxes[j] == checkBox.number)
+                  {
+                    console.log("Hit quadrant %i", i);
+                    // in quadrant i
+                    current_button = i;
+                    return i;
+                  }
+                }                
+              }
+                // not in either (not in a quadrant)
+                return NOBUTTON;
+            }
+            else
+            {
+//              console.log("NO BUTTON");
+            }
+          }
+        }
+
+        function initGrid()
+        {
+          var gridNumber = 100;
+          var row = 10;
+          var rowHeight = canvasHeight / row;
+          var col = 10;
+          var colWidth = canvasWidth / col; 
+
+          for(var i = 0; i < row; i++)
+          {
+            for (var j = 0; j < col; j++)
+            {
+              box = new Object()
+              box.number = (i * row) + j;
+              box.x1 = (i * rowHeight);
+              box.x2 = box.x1 + rowHeight;
+              box.y1 = (j * colWidth);
+              box.y2 = box.y1 + colWidth;
+              grid[box.number] = box;
+
+              ctx.fillRect(box.x1,box.y1,1,1);
+              ctx.fillRect(box.x2,box.y2,1,1);
+
+            }
+          }
+        }
+
+        console.log("Height (viewport): %s", $(window).height()) // returns height of browser viewport
+        console.log("Width (viewport): %s", $(window).width()) // returns width of browser viewport
+        console.log("Height (of HTML): %s", $(document).height()) // returns height of HTML document
+        console.log("Width (of HTML): %s", $(document).width()) // returns width of HTML document
+
+
+        // LINES
+
+        drawLine(canvasWidth * .25,0,canvasWidth * .25,canvasHeight);
+        drawLine(canvasWidth * .75,0, canvasWidth * .75, canvasHeight);
+        drawLine(0, canvasHeight * .25, canvasWidth, canvasHeight * .25);
+        drawLine(0, canvasHeight * .75, canvasWidth, canvasHeight * .75);
+*/

@@ -1,44 +1,485 @@
 <!DOCTYPE html>
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Eyely</title>    
+  <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <title>Eyely</title>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="eyely-styles.css" type="text/css" />
-  </head>
+    <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        .bs-example{
+          margin: 5px;
+        }
+    </style>
+    </head> 
 
-  <body>
-    <div class="header">
-        <a class="headertitle">Eyely</a> 
-    </div>
+    <body>
+      <h1 id="title">EYELY</h1>
 
-    <div class="content-wrapper">
-      <div class="content">
-        <div class="document">
-          <div class="documentwrapper">
-            <div class="body" style="height:400px">
-              <h1>Interface</h1>  
-              <p> 
-                Allowing sick patients to communicate with their eyes.
-              </p>
-            </div>
-          </div>
-        </div>
+      <form>
+        <button id="calibrate">Calibrate</button>
+      </form>
+
+      <center><h4 id="response"></h4></center>
+
+      <div class="navigation">
+        <img id="settings" src="img/settings-button.png">             
       </div> 
-    </div>
-    
-    <div class="clearer"></div>
 
-    <div class="footer-wrapper">
-      <div class="footer">
-        <div class="right">          
-          <div class="footer">
-            &copy; Made at GrandHack @ MIT
-            </div>
-          </div>
-        <div class="clearer"></div>
+      <div class="interface-wrapper"> 
+
+        <canvas class="main-canvas" id="canvas"></canvas>
+
+        <img id="button1">
+        <h2 id="button1desc" class="english"></h2>
+        <h3 id="button1descSpanish" class="spanish"></h2>        
+
+        <img id="button2">
+        <h2 id="button2desc" class="english"></h2>
+        <h3 id="button2descSpanish" class="spanish"></h2>        
+        
+        <img id="button3">
+        <h2 id="button3desc" class="english"></h2>
+        <h3 id="button3descSpanish" class="spanish"></h2>        
+        
+        <img id="button4">
+        <h2 id="button4desc" class="english"></h2>
+
+        <img id="crosshairs" src="img/100_opacity/crosshair_grey.png">
       </div>
-    </div>
 
-  </body>
-</html>
+      <script type="text/javascript">
+        var canvas=document.getElementById('canvas');
+        var ctx=canvas.getContext('2d');
+        var winHeight = $(window).height();
+        var winWidth = $(window).width();
+        
+        var sizeWidth = ctx.canvas.clientWidth;
+        var sizeHeight = ctx.canvas.clientHeight;
+        
+        // canvas coordinates
+        var canvasWidth = 300;
+        var canvasHeight = 150;
+
+        // GRID CONFIGURATIONS
+//        var grid = new Array();
+  //      box = new Object();        
+
+        var hitBuffer = new Array();
+
+        // quadrants
+        var quad1 = [20,30,31,40,41,42,52,51,50,60,61,70];        // left
+        var quad2 = [29,39,38,49,48,47,59,58,57,69,68,79];        // right
+        var quad3 = [2,3,4,5,6,7,13,14,15,16,24,25];              // up
+        var quad4 = [74,75,83,84,85,86,92,93,94,95,96,97];        // down
+        var quads = [quad1, quad2, quad3, quad4];
+
+        // BUTTON CONFIGURATIONS
+
+        // enums for quadrants
+        var BUTTON1 = 0;
+        var BUTTON2 = 1;
+        var BUTTON3 = 2;
+        var BUTTON4 = 3;
+        var NOBUTTON = 4;
+
+        // in microseconds
+        var buttonPressDelay = 6000;
+
+        // need to build interface to change this
+        var buttonIndex = 1;
+        var buttonMessageIndex = 0;
+
+        var buttonMapping = [
+        ["YES", BUTTON1],
+        ["WATER", BUTTON2],
+        ["NO", BUTTON3],
+        ["OMG", BUTTON4]];
+
+        // MOUSE LISTENER
+      
+        var mouseListener;
+        mouseListener();
+/*
+        function mouseListener () 
+        {
+            var mousePos;
+
+            window.onmousemove = handleMouseMove;
+            mouseListener = setInterval(getMousePosition, 33); // setInterval repeats every X ms
+
+            function handleMouseMove(event) 
+            {
+                event = event || window.event; // IE-ism
+                mousePos = {
+                    x: event.clientX,
+                    y: event.clientY
+                };
+            }
+
+            function getMousePosition() {
+                var pos = mousePos;
+                if (!pos) 
+                {
+                    // We haven't seen any movement yet
+                }
+                else 
+                {
+
+                }
+            }
+        }
+*/
+        function screenToCanvasCoordinates(x,y)
+        {
+          var a = pos.x * canvasWidth / winWidth;
+          var b = pos.y * canvasHeight / winHeight; 
+          loopCoordinates(a,b);          
+        }
+
+        console.log(canvasWidth, canvasHeight);
+
+        // SCREEN CONFIGURATIONS
+        
+        // default button pressed is none (4)
+        var current_button = NOBUTTON;
+        var previous_button = NOBUTTON;
+
+        // feed mouse coordinates or pupil (converted) coordinates into this --> will return which button is pressed (if any)
+        function loopCoordinates(x,y)
+        {
+          coordinatesToButton(x,y);
+          hoverOverButton(current_button);
+        }
+
+        setOptions(1,"maybe","Maybe","Tal Vez");
+        setOptions(2,"yes","Yes","Si");
+        setOptions(3,"more","More","Mas");
+        setOptions(4,"no","No","No");
+
+        var onButton = false;
+
+        function hoverOverButton(but)
+        {
+          switch (but)
+          {
+            case BUTTON1: 
+//              console.log("button 1 hover");
+              $("#button1").attr("src","img/60_opacity/" + button1src + ".png");
+              onButton = true;
+              break;
+            case BUTTON2:
+  //            console.log("button 2 hover");
+              $("#button2").attr("src","img/60_opacity/" + button2src + ".png");
+              onButton = true;
+              break;
+            case BUTTON3:
+    //          console.log("button 3 hover");
+              $("#button3").attr("src","img/60_opacity/" + button3src + ".png");            
+              onButton = true;
+              break; 
+            case BUTTON4:                         
+      //        console.log("button 4 hover");
+              $("#button4").attr("src","img/60_opacity/" + button4src + ".png");
+              onButton = true;
+              break;
+            case NOBUTTON:
+              onButton = false;
+        //      console.log("no button");
+              $("#button1").attr("src","img/30_opacity/" + button1src + ".png");
+              $("#button2").attr("src","img/30_opacity/" + button2src + ".png"); 
+              $("#button3").attr("src","img/30_opacity/" + button3src + ".png");                   
+              $("#button4").attr("src","img/30_opacity/" + button4src + ".png");
+              break;
+          }
+        }
+
+        var button1src;
+        var button1labelEn;
+        var button1labelSp;
+
+        var button2src;
+        var button2labelEn;
+        var button2labelSp;
+
+        var button3src;
+        var button3labelEn;
+        var button3labelSp;
+
+        var button4src;
+        var button4labelEn;
+        var button4labelSp;
+
+
+        configureTextAndImages();
+        function configureTextAndImages ()
+        {
+          $("#button1").attr("src","img/30_opacity/" + button1src + ".png");
+          $("#button1desc").text(button1labelEn);          
+          $("#button1descSpanish").text(button1labelSp); 
+          
+          $("#button2").attr("src","img/30_opacity/" + button2src + ".png"); 
+          $("#button2desc").text(button2labelEn);          
+          $("#button2descSpanish").text(button2labelSp); 
+
+          $("#button3").attr("src","img/30_opacity/" + button3src + ".png");                   
+          $("#button3desc").text(button3labelEn);          
+          $("#button3descSpanish").text(button3labelSp); 
+
+          $("#button4").attr("src","img/30_opacity/" + button4src + ".png");
+          $("#button4desc").text(button4labelEn);          
+          $("#button4descSpanish").text(button4labelSp); 
+
+        }
+
+        function submitCommand(but)
+        {
+          for (var command in buttonMapping)
+          {
+            if (command[buttonIndex] == but)
+            {
+              console.log(command[buttonMessageIndex]);
+            }
+          }     
+        } 
+
+        // Hit buffers (once the hand passes a certain point - starts filling
+        // To get impact, simply take the first object
+        var hit1 = new Array();
+        var hit2 = new Array();
+        var hit3 = new Array();
+        var hit4 = new Array();
+    
+        // Array holding hit buffers (to iterate through)
+        var hits = [hit1, hit2, hit3, hit4];
+
+        function coordinatesToButton(x,y)
+        {
+          if (x < canvasWidth * .25)
+          {
+            hit2 = [];
+            hit3 = [];
+            hit4 = [];
+            hit1.push(1);
+            if (hit1.length == 2)
+            {
+              console.log('Current Beat = 1');
+              previous_button = BUTTON1;
+              startTimer(BUTTON1);
+            }
+            current_button = BUTTON1;
+          }
+          else if (x > canvasWidth * .75)
+          {
+            hit1 = [];
+            hit2 = [];
+            hit4 = [];
+            hit3.push(1);
+
+            if (hit3.length == 2)
+            {
+              console.log('Current Beat = 3');
+              previous_button = BUTTON3;
+              startTimer(BUTTON3);
+            }
+            current_button = BUTTON3;
+          }
+          else if (y > canvasHeight * .75)
+          {
+            hit1 = [];
+            hit2 = [];
+            hit3 = [];
+            hit4.push(1);
+
+            if (hit4.length == 2)
+            {
+              console.log('Current Beat = 4');
+              previous_button = BUTTON4;
+              startTimer(BUTTON4);
+            }
+            current_button = BUTTON4;
+          }
+          else if (y < canvasHeight * .25)
+          {
+            hit1 = [];
+            hit3 = [];
+            hit4 = [];
+            hit2.push(1);
+
+            if (hit2.length == 2)
+            {
+              console.log('Current Beat = 2');
+              previous_button = BUTTON2;
+              startTimer(BUTTON2);
+            }
+            current_button = BUTTON2;
+          }
+          else
+          {
+            emptyAllHits(NOBUTTON);
+            current_button = NOBUTTON;
+          }
+        }
+
+        function startTimer(but)
+        {
+  //        console.log("starting timer");
+            var registerTimer = setTimeout(function ()
+            {
+//              console.log("timer fired");
+              if (but == current_button)
+              {
+                switch (but)
+                {
+                  case BUTTON1:
+                    $("#button1").attr("src","img/100_opacity/" + button1src + ".png");
+                    registered(button1labelEn);
+                    break;
+
+                  case BUTTON2:
+                    $("#button2").attr("src","img/100_opacity/" + button2src + ".png");   
+                    registered(button2labelEn);
+                    break;
+
+                  case BUTTON3:
+                    $("#button3").attr("src","img/100_opacity/" + button3src + ".png");                   
+                    registered(button3labelEn);
+                    break;
+
+                  case BUTTON4:
+                    $("#button4").attr("src","img/100_opacity/" + button1src + ".png");
+                    registered(button4labelEn);
+                    break;
+
+                  case NOBUTTON:
+                    break;
+                }         
+                  clearInterval(mouseListener);                       
+              }
+            }, 2000);
+        }
+
+        function registered(response)
+        {
+          $("#response").text("\"" + response + "\""); 
+          console.log(response);
+          if (response == "More")
+          {
+            console.log("HI");
+            setOptions(1,"food","Food","Camida");
+            setOptions(2,"temp_up","Cold","Cool");
+            setOptions(3,"water","Water","Agua");
+            setOptions(4,"temp_down","Hot","Caliente");
+          }
+        }
+
+        function setOptions(number, src, enLabel, spLabel)
+        {
+          switch (number)
+          {
+            case 1:
+              button1src = src;
+              button1labelEn = enLabel;
+              button1labelSp = spLabel;
+              break;
+
+            case 2: 
+              button2src = src;
+              button2labelEn = enLabel;
+              button2labelSp = spLabel;
+              break;
+
+            case 3: 
+              button3src = src;
+              button3labelEn = enLabel;
+              button3labelSp = spLabel;
+              break;
+
+            case 4:
+              button4src = src;
+              button4labelEn = enLabel;
+              button4labelSp = spLabel;
+              break;
+          }
+          configureTextAndImages();
+        }
+
+        function emptyAllHits(button)
+        {
+          // Go through beat impact buffers
+          for (var i = 0; i < hits.length; i++)
+          {
+            if (hits[i].length > 0)
+            {
+              // reinitialize array
+              hits[i] = [];
+            }              
+          }
+        }
+
+      // CALBRATION CODE
+
+      height = $(window).height();
+      width = $(window).width();
+
+      // gain and offset params for mapping
+      gainX = 2;
+      gainY = 2;
+      offsetX = width/2;
+      offsetY = height/2;
+
+      tau = 10; // time constant to smooth eye position
+      t = 0;      
+      eyeX = 0;
+      eyeY = 0;
+
+      // mouse movement event callback
+      //  This will be your main timer function 
+      eye1X = e.pageX;
+      eye1Y = e.pageY;
+      eye2X = eye1X + 50;
+      eye2Y = eye1Y - 2;
+
+      // set these to incoming of Akshays's
+
+      // end reading in eye pupil location
+
+      // average pupil positions
+      eyeXraw = (eye1X + eye2X)/2;
+      eyeYraw = (eye1Y + eye2Y)/2;
+
+      // smooth eye data (increase tau to increase smoothing)
+      t = t+1;
+      if (t == 1) { // initialize smoothed eye coordinates
+        eyeX = eyeXraw;
+        eyeY = eyeYraw;
+      }
+      // use exponential smoothing
+      eyeX = (tau-1)/tau*eyeX + (1/tau)*eyeXraw;
+      eyeY = (tau-1)/tau*eyeY + (1/tau)*eyeYraw;
+
+      // map pupil position onto screen coordinates
+      //    offset will get updated upon selecting the "Calibrate" button
+      //    gain we will manually tune
+      screenXPos = (eyeX - offsetX) * gainX;
+      screenYPos = (eyeY - offsetY) * gainY;
+
+      // pass into other system
+      screenToCanvasCoordinates(screenXPos, screenYPos);
+
+      // screen conversion
+      document.getElementById( "calibrate" ).setAttribute( "onClick", "javascript: Calibrate();" );
+
+      var Calibrate = function()
+      {
+        offsetX = eyeX;
+        offsetY = eyeY;
+      }
+    
+    </script>
+
+    </body>
+  </html>                                   
+
