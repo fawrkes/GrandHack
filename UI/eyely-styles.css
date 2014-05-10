@@ -40,31 +40,31 @@ h3 {
 #button1desc {
   position: absolute;
   left: 230px;
-  top: 230px;
+  top: 200px;
 }
 
 #button1descSpanish {
   position: absolute;
   left: 230px;
-  top: 420px;
+  top: 450px;
 }
 
 #button2desc {
   position: absolute;
-  left: 675px;
-  top: 50px;
+  left: 550px;
+  top: 150px;
 }
 
 #button2descSpanish {
   position: absolute;
-  left: 690px;
-  top: 230px;
+  left: 800px;
+  top: 150px;
 }
 
 #button3desc {
   position: absolute;
   left: 1105px;
-  top: 220px;
+  top: 200px;
 }
 
 #button3descSpanish {
@@ -75,14 +75,14 @@ h3 {
 
 #button4desc {
   position: absolute;
-  left: 690px;
-  top: 520px;
+  left: 550px;
+  top: 570px;
 }
 
 #button4descSpanish {
   position: absolute;
-  left: 690px;
-  top: 520px;
+  left: 820px;
+  top: 570px;
 }
 
 #title {
@@ -146,7 +146,7 @@ div.navigation {
 #button1 {
   position: absolute;
   left: 180px;
-  top: 285px;
+  top: 255px;
 }
 
 #button2 {
@@ -164,7 +164,7 @@ div.navigation {
 #button4 {
   position: absolute;
   left: 630px;
-  top: 575px;
+  top: 525px;
 }
 
 div.title {

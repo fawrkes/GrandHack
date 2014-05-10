@@ -15,7 +15,7 @@
     </style>
     </head> 
 
-    <body>
+    <body style="cursor: none;">
       <h1 id="title">EYELY</h1>
 
       <form>
@@ -46,6 +46,7 @@
         
         <img id="button4">
         <h2 id="button4desc" class="english"></h2>
+        <h3 id="button4descSpanish" class="spanish"></h2>        
 
         <img id="crosshairs" src="img/100_opacity/crosshair_grey.png">
       </div>
@@ -102,7 +103,7 @@
       
         var mouseListener;
         mouseListener();
-/*
+
         function mouseListener () 
         {
             var mousePos;
@@ -127,15 +128,17 @@
                 }
                 else 
                 {
-
+                  var a = pos.x * canvasWidth / winWidth;
+                  var b = pos.y * canvasHeight / winHeight; 
+                  loopCoordinates(a,b);          
                 }
             }
         }
-*/
+
         function screenToCanvasCoordinates(x,y)
         {
-          var a = pos.x * canvasWidth / winWidth;
-          var b = pos.y * canvasHeight / winHeight; 
+          var a = x * canvasWidth / winWidth;
+          var b = y * canvasHeight / winHeight; 
           loopCoordinates(a,b);          
         }
 
@@ -187,11 +190,7 @@
               break;
             case NOBUTTON:
               onButton = false;
-        //      console.log("no button");
-              $("#button1").attr("src","img/30_opacity/" + button1src + ".png");
-              $("#button2").attr("src","img/30_opacity/" + button2src + ".png"); 
-              $("#button3").attr("src","img/30_opacity/" + button3src + ".png");                   
-              $("#button4").attr("src","img/30_opacity/" + button4src + ".png");
+              configureTextAndImages();
               break;
           }
         }
@@ -369,7 +368,7 @@
           {
             console.log("HI");
             setOptions(1,"food","Food","Camida");
-            setOptions(2,"temp_up","Cold","Cool");
+            setOptions(2,"temp_up","Cold","Frio");
             setOptions(3,"water","Water","Agua");
             setOptions(4,"temp_down","Hot","Caliente");
           }
